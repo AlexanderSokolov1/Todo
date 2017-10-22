@@ -15,7 +15,7 @@ namespace Todo
             {
                 if (service == null)
                 {
-					// this is localhost for android network
+                    // this is localhost for android network
                     service = new TodoItemService("http://10.0.2.2:1476/api");
                 }
 

@@ -118,7 +118,7 @@ namespace Todo.Services
         private async Task SendRequest<TErrorResponse>(HttpRequestMessage message)
             where TErrorResponse : IFailedResponse
         {
-            var response = GetResponse(message);
+            var response = await GetResponse(message);
             if (!response.IsSuccessStatusCode)
             {
                 using (var stream = await response.Content.ReadAsStreamAsync())
@@ -139,7 +139,7 @@ namespace Todo.Services
         private async Task<TResponse> ProcessResponse<TResponse, TErrorResponse>(HttpRequestMessage message)
             where TErrorResponse : IFailedResponse
         {
-            var response = GetResponse(message);
+            var response = await GetResponse(message);
             using (var stream = await response.Content.ReadAsStreamAsync())
             using (var reader = new StreamReader(stream))
             using (var jReader = new JsonTextReader(reader))
@@ -170,7 +170,7 @@ namespace Todo.Services
             }
         }
 
-        private HttpResponseMessage GetResponse(HttpRequestMessage message)
+        private async Task<HttpResponseMessage> GetResponse(HttpRequestMessage message)
         {
             try
             {
@@ -178,7 +178,7 @@ namespace Todo.Services
                 HttpClientHandler handler = new HttpClientHandler();
                 handler.CookieContainer = cookies;
                 HttpClient client = new HttpClient(handler);
-                return client.SendAsync(message).Result;
+                return await client.SendAsync(message);
             }
             catch (Exception e)
             {
